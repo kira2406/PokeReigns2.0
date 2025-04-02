@@ -7,7 +7,9 @@ const authRoutes = require("./src/routes/authRoutes");
 
 const app = express();
 
-app.use(cors())
+app.use(cors({
+  allowedHeaders: ["Content-Type", "Authorization"]
+}))
 app.use(bodyParser.json())
 
 app.use("/auth", authRoutes)
