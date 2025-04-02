@@ -32,17 +32,16 @@ const loginUser = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user
-    const token = await admin.auth().createCustomToken(user.uid);
-    return token;
+    return user;
   } catch (error) {
-    let errorMessage = "Login Error: Something went wrong."
+    let errorMessage = "Login Error: Invalid Credentials."
 
     switch (error?.code) {
         case "auth/invalid-credential":
             errorMessage = "Login Error: Invalid Credentials."
             break;
         default:
-            errorMessage = "Login Error: Something went wrong."
+            errorMessage = "Login Error: Invalid Credentials."
             break;
     }
     throw new Error(errorMessage);
@@ -59,4 +58,14 @@ const logoutUser = async () => {
     }
 };
 
-module.exports = { registerUser, loginUser, logoutUser };
+const verifyTokenService = async (token) => {
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    return { valid: true, uid: decodedToken.uid };
+  } catch (error) {
+    console.log("error", error)
+    throw new Error("Invalid token");
+  }
+};
+
+module.exports = { registerUser, loginUser, logoutUser, verifyTokenService };
