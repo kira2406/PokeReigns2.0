@@ -7,17 +7,18 @@ import Register from "../pages/Register/Register";
 import Home from "../pages/Home/Home";
 import Landing from "../pages/Landing/Landing";
 import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
+import { selectUser } from "../redux/selectors/authSelector";
 
-const isAuthenticated = () => {
-    return localStorage.getItem("userToken") !== null;
-};
 
 const ProtectedRoute = ({ element }) => {
-    return isAuthenticated() ? element : <Navigate to="/" replace />;
+    const isAuthenticated = useSelector(selectUser)
+    return isAuthenticated ? element : <Navigate to="/" replace />;
 };
 
 const PublicRoute = ({ element }) => {
-    return isAuthenticated() ? <Navigate to="/home" replace /> : element;
+    const isAuthenticated = useSelector(selectUser)
+    return isAuthenticated ? <Navigate to="/home" replace /> : element;
 };
 
 const router = createBrowserRouter([
