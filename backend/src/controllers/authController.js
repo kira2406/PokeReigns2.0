@@ -1,9 +1,12 @@
 const authService = require("../services/authService");
+const userService = require("../services/userService")
 
 const register = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await authService.registerUser(email, password);
+    await userService.createUser(user?.uid, user?.email);
+
     const token = await user.getIdToken();
     res.status(201).json({ status: "success", user: user?.uid, token: token });
   } catch (error) {
@@ -33,7 +36,6 @@ const logout = async (req, res) => {
 
 const verifyToken = async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
-
   if (!token) {
     return res.status(401).json({ message: "Unauthorized: No token provided" });
   }
