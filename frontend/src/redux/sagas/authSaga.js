@@ -6,21 +6,22 @@ import {
   logout, 
   verifyTokenRequest,
   verifyTokenSuccess,
-  verifyTokenFailure
+  verifyTokenFailure,
+  fetchUserDataRequest
 } from "../reducers/authReducer";
 import axiosInstance from "../../utils/axiosInstance";
 
 const API_URL = import.meta.env.VITE_POKEREIGNS_BACKEND_URL;
 
 function* verifyTokenSaga() {
-    const token = localStorage.getItem('token') || true;
+    const token = localStorage.getItem('token') || false;
   
     if (token) {
       try {
-        console.log("token", token)
         const response = yield call(axiosInstance.post, '/auth/verifyToken');
         if (response?.data?.valid){
-            yield put(verifyTokenSuccess(response?.data))    
+            yield put(verifyTokenSuccess(response?.data))
+            yield put(fetchUserDataRequest())
         }
         else{
             yield put(verifyTokenFailure("Invalid token"));

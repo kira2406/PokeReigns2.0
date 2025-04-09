@@ -4,21 +4,26 @@ import Layout from '../components/Layout/Layout';
 import { Container } from '@mui/material';
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
-import Home from "../pages/Home/Home";
 import Landing from "../pages/Landing/Landing";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import { selectUser } from "../redux/selectors/authSelector";
+import StarterPage from "../pages/StarterPage/StarterPage";
+import Dashboard from "../pages/Dashboard/Dashboard";
 
 
 const ProtectedRoute = ({ element }) => {
-    const isAuthenticated = useSelector(selectUser)
-    return isAuthenticated ? element : <Navigate to="/" replace />;
+    const user = useSelector(selectUser)
+
+    if (!user){
+        return <Navigate to="/login" replace />
+    }
+    return element
 };
 
 const PublicRoute = ({ element }) => {
     const isAuthenticated = useSelector(selectUser)
-    return isAuthenticated ? <Navigate to="/home" replace /> : element;
+    return isAuthenticated ? <Navigate to="/dashboard" replace /> : element;
 };
 
 const router = createBrowserRouter([
@@ -36,9 +41,13 @@ const router = createBrowserRouter([
         element: <Layout />,
         children: [
             {
-                path: "/home",
-                element: <ProtectedRoute element={<Home />} />,
+                path: "/starter",
+                element: <ProtectedRoute element={<StarterPage />} />,
             },
+            {
+                path: "/dashboard",
+                element: <ProtectedRoute element={<Dashboard />} />,
+            }
         ],
     },
 ])
@@ -51,7 +60,7 @@ const AppRouter = () => {
 }
 
 ProtectedRoute.propTypes = {
-    element: PropTypes.element.isRequired,
+    element: PropTypes.element.isRequired
 };
 
 PublicRoute.propTypes = {

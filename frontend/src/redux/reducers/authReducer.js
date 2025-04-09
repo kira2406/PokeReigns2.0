@@ -53,6 +53,19 @@ const authSlice = createSlice({
       state.token = null;
       localStorage.removeItem("token");
     },
+    fetchUserDataRequest: (state) => {
+      state.loading = true
+      state.error = null
+    },
+    fetchUserDataSuccess: (state, action) => {
+      state.loading = false
+      state.user = action.payload.user
+      state.error = null
+    },
+    fetchUserDataFailure: (state, action) => {
+      state.loading = false
+      state.error = action.payload
+    }
   },
 });
 
@@ -66,7 +79,10 @@ export const {
   logout,
   verifyTokenFailure,
   verifyTokenRequest,
-  verifyTokenSuccess
+  verifyTokenSuccess,
+  fetchUserDataRequest,
+  fetchUserDataSuccess,
+  fetchUserDataFailure
 } = authSlice.actions;
 
 export default authSlice.reducer;
